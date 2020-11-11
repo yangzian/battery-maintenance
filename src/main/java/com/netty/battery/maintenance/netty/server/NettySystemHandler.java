@@ -97,7 +97,7 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
             info.setZhuangIdStr(pile);
 
 
-            chargingMapper.insertDatChaPilSta(info);   // 实时数据上传
+            //chargingMapper.insertDatChaPilSta(info);   // 实时数据上传
 
             System.out.println("状态信息上报1---104----"+info);
 
@@ -113,7 +113,8 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
             //fau_sta '故障状态(0为无故障，1为机器故障，2为网络故障，3为系统故障)
             // 修改设备的状态
             //chargingMapper.updChaPilSta(null,null, SHUtils.getPileNum(msg),null,String.valueOf(sta),"0");
-            chargingMapper.updChaPilStaNew(SHUtils.getPileNum(msg),String.valueOf(sta));
+
+           // chargingMapper.updChaPilStaNew(SHUtils.getPileNum(msg),String.valueOf(sta));
 
             String gun = BytesUtil.byteToHexString(info.getGun());
             String cardStr = BytesUtil.bytesToHexString(info.getCardID());
@@ -343,7 +344,7 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
                 fauMap.put("ala_lev", "1");
                 fauMap.put("ala_dec", "发生了故障(不能给汽车充电)");
 
-                chargingMapper.insertFau(fauMap); //添加故障信息
+               // chargingMapper.insertFau(fauMap); //添加故障信息
 
                 // cha_pil_sta` 充电桩状态（1为充电中，2为空闲，3为故障，4为预约，5为离线,6为告警）',
                 //fau_sta '故障状态(0为无故障，1为机器故障，2为网络故障，3为系统故障)
@@ -396,7 +397,7 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
                 System.out.println("electric========="+BytesUtil.toHexString(a));
 
                 //新增充电记录
-                chargingMapper.insertDatChaInf(client.getChargeRecordInfo());
+                //chargingMapper.insertDatChaInf(client.getChargeRecordInfo());
 
 
                 //修改 用户 余额 （原来修改余额 放在运营平台上 如果是车自动充满电 会自动结束 运营平台无法计算费用）
@@ -414,20 +415,20 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
                 String cha = null;
 
                 //桩编号查询 桩id
-                List<BasChaPilPojo> lst = chargingMapper.selChaIp(null,client.getChargeRecordInfo().getPileCode());
+               // List<BasChaPilPojo> lst = chargingMapper.selChaIp(null,client.getChargeRecordInfo().getPileCode());
 
-                if (lst.size() > 0){
+             /*   if (lst.size() > 0){
                     cha =lst.get(0).getChaId();
                 }
-
+*/
 
                 System.out.println("桩id"+cha+"openid===="+open+"记录"+client.getChargeRecordInfo());
 
                 // 根据openid 和 桩id 查询 充电记录 信息
-                List<Map<String,String>> list = chargingMapper.selDatChaRec(open,cha,
+               /* List<Map<String,String>> list = chargingMapper.selDatChaRec(open,cha,
                         client.getChargeRecordInfo().getStartTime(),
                         client.getChargeRecordInfo().getEndTime());
-
+*//*
                 if (list.size() < 1){
 
                     ChargeRecordInfo chInfo = client.getChargeRecordInfo();
@@ -466,10 +467,10 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
                     //map.put("openid",ope); //微信唯一标识
                     map.put("openid",open); //微信唯一标识
                     //map.put("chaOrdNum",);充电订单号
-                    chargingMapper.insertDatChaRes(map);
+                   // chargingMapper.insertDatChaRes(map);
 
                     // 查询用户余额
-                    Map<String,Object> accBalMap = chargingMapper.selUseWxAccBal(openId);
+                   // Map<String,Object> accBalMap = chargingMapper.selUseWxAccBal(openId);
 
                     double accc = (double)accBalMap.get("acc_bal");
 
@@ -484,7 +485,7 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
                     DecimalFormat df = new DecimalFormat("#.00");
 
                     // 修改余额 经验值
-                    chargingMapper.updUseWx(df.format(money),useExperience,openId);
+                  //  chargingMapper.updUseWx(df.format(money),useExperience,openId);
 
 
 
@@ -492,6 +493,9 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
 
 
                 }
+
+
+                */
 
             }
 

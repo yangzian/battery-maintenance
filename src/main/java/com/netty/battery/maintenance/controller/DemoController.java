@@ -50,6 +50,7 @@ public class DemoController {
 
     }
 
+/*
 
     @ApiOperation(value = "测试费用")
     @GetMapping(value = "/testEle")
@@ -155,6 +156,7 @@ public class DemoController {
 
         return null;
     }
+*/
 
 
 

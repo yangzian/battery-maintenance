@@ -37,7 +37,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("充电桩")
+                .title("电池养护智能终端数据采集")
                 .version("1.0")
                 .description("com.netty.battery.maintenance")
                 .build();

@@ -152,9 +152,10 @@ public class ChargingServiceImpl implements ChargingService {
 
     public List<BasChaPilPojo> selChaIp(String chaId,String chaNum){
 
-        return chargingMapper.selChaIp(chaId,chaNum);
+       // return chargingMapper.selChaIp(chaId,chaNum);
 
 
+        return null;
     }
 
 

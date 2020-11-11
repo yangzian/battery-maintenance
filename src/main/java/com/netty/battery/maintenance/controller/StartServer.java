@@ -1,3 +1,4 @@
+/*
 package com.netty.battery.maintenance.controller;
 
 import com.netty.battery.maintenance.config.ServerResponse;
@@ -70,3 +71,4 @@ public class StartServer implements ApplicationRunner {
 
     }
 }
+*/

@@ -53,7 +53,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/service")
-@Api(tags = "充电桩")
+@Api(tags = "电池数据采集")
 public class ChargingController {
 
 
@@ -153,11 +153,11 @@ public class ChargingController {
 
 
             // 查询用户余额
-            Map<String,Object> accBalMap = chargingMapper.selUseWxAccBal(openId);
+           // Map<String,Object> accBalMap = chargingMapper.selUseWxAccBal(openId);
 
-            double accc = (double)accBalMap.get("acc_bal");
+            //double accc = (double)accBalMap.get("acc_bal");
 
-            if (accc < 2){
+            if (0 < 2){
 
                 return ServerResponse.createByErrorMessage(new Date()+"桩编码为"+cha_num+"余额不够抵扣电费，请充值后再进行充电。");
 
