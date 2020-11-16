@@ -50,17 +50,16 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
             ctx.fireChannelRead(msg);
         }
         String cmd = BytesUtil.getMsgCmd(msg);
+
         String pileCode = SHUtils.getPileNum(msg);
 
         final ClientConnection client = ClientManager.getClientConnection(ctx,pileCode);
 
 
         if (cmd.equalsIgnoreCase("0200")) { //充电桩应答整形参数设置/查询报文 cmd=2
-            if (msg[50] == 0) {
 
-            } else {
-               // System.out.println("参数查询/设置--失败");
-            }
+            System.out.println(cmd);
+
 
 
         }else if (cmd.equalsIgnoreCase("6800")) { //充电桩上传状态信息包 cmd=104

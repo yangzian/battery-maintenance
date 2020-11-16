@@ -6,7 +6,6 @@ import com.netty.battery.maintenance.mapper.ChargingMapper;
 import com.netty.battery.maintenance.netty.server.NettyServer;
 import com.netty.battery.maintenance.pojo.BasChaPilPojo;
 import com.netty.battery.maintenance.service.ChargingService;
-import com.netty.battery.maintenance.shenghong.SHServer;
 import com.netty.battery.maintenance.shenghong.manager.ClientConnection;
 import com.netty.battery.maintenance.shenghong.manager.ClientManager;
 import io.swagger.models.auth.In;

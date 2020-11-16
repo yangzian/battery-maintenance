@@ -4,6 +4,11 @@ import com.netty.battery.maintenance.shenghong.SHUtils;
 import com.netty.battery.maintenance.shenghong.manager.ClientConnection;
 import com.netty.battery.maintenance.shenghong.manager.ClientManager;
 import com.netty.battery.maintenance.shenghong.message.*;
+import com.netty.battery.maintenance.shenghong.message.battery.Alarm;
+import com.netty.battery.maintenance.shenghong.message.battery.Monitor;
+import com.netty.battery.maintenance.shenghong.message.battery.ReplyMonitor;
+import com.netty.battery.maintenance.shenghong.message.battery.SystemInfo;
+import com.netty.battery.maintenance.shenghong.utils.ASCIIUtil;
 import com.netty.battery.maintenance.shenghong.utils.BytesUtil;
 import com.netty.battery.maintenance.shenghong.utils.CommonUtil;
 import com.netty.battery.maintenance.util.EhcacheUtil;
@@ -63,20 +68,6 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
         }
 
-        //如果map中不包含此连接，就保存连接
-       /* if (CHANNEL_MAP.containsKey(channelId)) {
-
-            //System.out.println("客户端【" + channelId + "】是连接状态，连接通道数量: " + CHANNEL_MAP.size());
-
-
-        } else {
-            //保存连接
-            CHANNEL_MAP.put(channelId, ctx);
-
-            System.out.println("客户端【" + channelId + "】连接netty服务器[IP:" + clientIp + "--->PORT:" + clientPort + "]");
-            //System.out.println("连接通道数量: " + CHANNEL_MAP.size());
-
-        }*/
     }
 
 
@@ -149,56 +140,70 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         if (!SHUtils.isShengHong(msg1)){
             ctx.fireChannelRead(msg1);
         }
+
+        // 获取 cmd 命令
         String cmd = BytesUtil.getMsgCmd(msg1);
 
         String pileCode = SHUtils.getPileNum(msg1);
 
         ClientManager.addClientConnection(ctx,pileCode);
 
+        if (cmd.equalsIgnoreCase("6a00")){ //告警 cmd=106
+
+            System.out.println("接收告警 cmd=106----------"+BytesUtil.bytesToHexString2(msg1));
+
+            Alarm alarm = Alarm.getAlarmInfo(msg1);
+
+            System.out.println(alarm+"---告警信息------");
 
 
-        InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
+            ReplyMonitor replyMonitor = new ReplyMonitor(1,pileCode,"6900"); //应答 105
+            byte[] reply = replyMonitor.getMsgByte(1);
 
-        String clientIp = insocket.getAddress().getHostAddress();
-
-        CLIENT_MAP.put(clientIp, ctx);
-
-       // final ClientConnection client = ClientManager.getClientConnection(ctx, pileCode);
-
-
-        //System.out.println("cmd======="+cmd+"-------------pilecode===="+pileCode);
-
-        if (cmd.equalsIgnoreCase("6a00")){ //充电桩签到 cmd=106
-
-            System.out.println("充电桩签到 cmd=106");
-
-            CLIENT_MAP.put(clientIp, ctx);
-            ClientManager.addClientConnection(ctx,pileCode);
-
-            SignResponse sr = new SignResponse();
-            byte[] signResp = sr.getMsgByte(1);
-
-
-            ctx.writeAndFlush(signResp);
-
-
-            //System.out.println("签到-----105");
+            System.out.println("回复告警-cmd=105----------"+BytesUtil.bytesToHexString2(reply));;
             //响应客户端
-            //this.channelWrite(ctx.channel().id(),signResp);
+            ctx.writeAndFlush(reply);
 
-        } else if (cmd.equalsIgnoreCase("6600")){ //充电桩上传心跳包 cmd=102
 
-            System.out.println("充电桩上传心跳包 cmd=102");
+        } else if (cmd.equalsIgnoreCase("6600")){ //电池上传心跳包数据 cmd=102
 
-            CLIENT_MAP.put(clientIp, ctx);
-            ClientManager.addClientConnection(ctx,pileCode);
+            System.out.println("接收心跳 cmd=102----------"+BytesUtil.bytesToHexString2(msg1));
 
-            HbResponse hs = new HbResponse(1, 2);
+            HbResponse hs = new HbResponse(1,pileCode, 2);
             byte[] hbSlave = hs.getMsgByte(1);
-            ctx.writeAndFlush(hbSlave);
-            //System.out.println("心跳 cmd=101");
+
+            System.out.println("回复心跳-cmd=101----------"+BytesUtil.bytesToHexString2(hbSlave));;
             //响应客户端
-            this.channelWrite(ctx.channel().id(),hbSlave);
+            ctx.writeAndFlush(hbSlave);
+
+        }else if(cmd.equalsIgnoreCase("6800")){// 104 监控信息上报
+            System.out.println("接收监控 cmd=104----------"+BytesUtil.bytesToHexString2(msg1));
+
+            Monitor monitor = Monitor.getMonitorInfo(msg1);
+
+            System.out.println(monitor+"---监控信息上报------");
+
+            ReplyMonitor replyMonitor = new ReplyMonitor(1,pileCode,"6700"); //应答 103
+            byte[] reply = replyMonitor.getMsgByte(1);
+
+            System.out.println("回复监控-cmd=103----------"+BytesUtil.bytesToHexString2(reply));;
+            //响应客户端
+            ctx.writeAndFlush(reply);
+
+
+        }else if(cmd.equalsIgnoreCase("ca00")){// 202 系统信息上报
+            System.out.println("接收系统信息 cmd=202----------"+BytesUtil.bytesToHexString2(msg1));
+
+            SystemInfo monitor = SystemInfo.getSystemInfo(msg1);
+
+            System.out.println(monitor+"---接收系统信息解析------");
+
+            ReplyMonitor replyMonitor = new ReplyMonitor(1,pileCode,"c900"); // 应答 201
+            byte[] reply = replyMonitor.getMsgByte(1);
+            System.out.println("回复系统信息-cmd=201----------"+BytesUtil.bytesToHexString2(reply));;
+            //响应客户端
+            ctx.writeAndFlush(reply);
+
 
         }else {
 

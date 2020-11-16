@@ -50,9 +50,7 @@ public class NettyClient implements Runnable{
                         });
 
             //ChannelFuture future = b.connect(HOST, PORT).sync();
-            ChannelFuture future = b.connect("192.168.1.7", 9999).sync();
-
-            future.channel().writeAndFlush(content + "--" + new Date().getTime()+"-----------这是我发送的数据");
+            ChannelFuture future = b.connect("192.168.31.207", 9999).sync();
 
 
             while (boo) {
@@ -61,7 +59,7 @@ public class NettyClient implements Runnable{
 
                 //future.channel().writeAndFlush(content + "--" + DateUtils.getgetDateTime());
                 //future.channel().writeAndFlush(content + "--" + new Date().getTime());
-                future.channel().writeAndFlush(content + "--" + new Date().getTime()+"-----------这是我发送的数据");
+                future.channel().writeAndFlush("aa f5 00 00 00 00");
 
                 try { //休眠一段时间
                     Thread.sleep(3000);
@@ -71,7 +69,7 @@ public class NettyClient implements Runnable{
 
                 //每一条线程向服务端发送的次数
                 if (num == 10) {
-                    boo = false;
+                    //boo = false;
                 }
             }
 
@@ -84,6 +82,7 @@ public class NettyClient implements Runnable{
             group.shutdownGracefully();
         }
     }
+
 
 
 

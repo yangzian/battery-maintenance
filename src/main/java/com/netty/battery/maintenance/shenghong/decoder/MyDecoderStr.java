@@ -1,6 +1,5 @@
 package com.netty.battery.maintenance.shenghong.decoder;
 
-import com.netty.battery.maintenance.shenghong.SHUtils;
 import com.netty.battery.maintenance.shenghong.utils.BytesUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
@@ -13,31 +12,24 @@ import java.util.List;
 /**
  * 解码器<br>
  * 解决粘包问题
- * 
- * @author cj
+ *  string 数据
+ * @author za
  *
  */
-public class MyDecoder extends MessageToMessageDecoder<byte[]> {
+public class MyDecoderStr extends MessageToMessageDecoder<String> {
 
-    private static final Logger log = LoggerFactory.getLogger(MyDecoder.class);
-    @Override
-    protected void decode(ChannelHandlerContext ctx, byte[] msg, List<Object> out) throws Exception {
+    private static final Logger log = LoggerFactory.getLogger(MyDecoderStr.class);
+
+    protected void decode(ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {
         try {
 
-            log.info("decode11111 ---> " + BytesUtil.bytesToHexString2(msg));
-
-            // 头 信息 是否正确
-            if (SHUtils.isShengHong(msg)) {
-                unpackSH(msg, out);
-            }else {
-                log.info( " unkown proctrol 未知协议类型"+msg );
-                //out.add(msg);
-            }
+            log.info("decodeStr ---> " + msg);
 
         } catch (Exception e) {
-            log.error(" decode Exception : " + e.toString());
+            log.error(" decodeStr Exception : " + e.toString());
         }
     }
+
     /**
      * 拆包
      */

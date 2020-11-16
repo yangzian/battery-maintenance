@@ -13,5 +13,8 @@ public class demo {
         System.out.println(222);
         System.out.println(333);
 
+        NettyClient nettyClient = new NettyClient("1");
+        nettyClient.run();
+
     }
 }

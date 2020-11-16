@@ -1,7 +1,16 @@
 package com.netty.battery.maintenance.shenghong.utils;
 
+import org.hibernate.validator.constraints.br.TituloEleitoral;
+import org.junit.Test;
+
 public class ASCIIUtil {
 
+
+    /**
+     *  32 位 转成原来的 string
+     * @param hex
+     * @return
+     */
     public static String convertHexToString(String hex) {
 
         StringBuilder sb = new StringBuilder();
@@ -43,9 +52,9 @@ public class ASCIIUtil {
 
     /**
      * Convert ASCII string to hex string
-     * 盛宏协议（补齐32位，不足补’\0’ ）
-     * 
-     * @param src
+     * 10进制的转换成ascii 16进制 （补齐32位，不足补’\0’ ）
+     *  比如 112233 转成 ascii 16进制为 313132323333 然后再补位 3131323233330000000000000000000000000000000000000000000000000000
+     * @param ascii
      * @return
      */
     public static String ASCII2HexString(String ascii) {
@@ -68,7 +77,7 @@ public class ASCIIUtil {
 
     /**
      * 10进制转换为相应的ascii码16进制形式
-     * 
+     *  比如 112233  转成 313132323333
      * @param ascii
      * @return
      */
@@ -84,6 +93,23 @@ public class ASCIIUtil {
         }
 
         return builder.toString();
+    }
+
+
+
+    @Test
+    public void demo123(){
+        String a = int2AsciiHex("112233");
+        System.out.println(a);
+
+ String b = ASCII2HexString("112233");
+        System.out.println(b);
+
+
+       String c = convertHexToString(b);
+
+        System.out.println(c);
+
     }
 
 }

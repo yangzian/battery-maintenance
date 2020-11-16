@@ -84,7 +84,7 @@ public class ShHeartBeatHandler extends ChannelInboundHandlerAdapter {
             ctx.executor().execute(new Runnable() {
                 @Override
                 public void run() {
-                    HbResponse hs = new HbResponse(1, 2);
+                    HbResponse hs = new HbResponse(1,"1111", 2);
                     byte[] hbSlave = hs.getMsgByte(1);
                     ctx.writeAndFlush(hbSlave);
                  

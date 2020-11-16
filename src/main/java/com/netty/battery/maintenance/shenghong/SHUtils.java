@@ -17,7 +17,7 @@ public class SHUtils {
 		return pile.trim();
 	}
 
-	// 盛宏桩
+	// 校验 头 信息
 	public static boolean isShengHong(byte[] msg) {
 		byte[] b = new byte[] { (byte) 0xAA, (byte) 0xf5 };
 		if (msg[0] == b[0] && msg[1] == b[1]) {
@@ -56,10 +56,11 @@ public class SHUtils {
 		System.arraycopy(lenb, 0, res, 2, 2);
 		res[4] = (byte) 0x10;
 
-        System.out.println("sequence==10======="+sequence);
+        //System.out.println("sequence==10======="+sequence);
 
 		//res[5] = (byte) Integer.parseInt(Integer.toHexString(sequence));
-		System.out.println("sequence==16======="+Integer.parseInt(Integer.toString(sequence),16));
+		//System.out.println("sequence==16======="+Integer.parseInt(Integer.toString(sequence),16));
+
 		res[5] = (byte) Integer.parseInt(Integer.toString(sequence),16);;//序列号 10进制 转 16进制
 		// cmd
 		System.arraycopy(cmd, 0, res, 6, 2);
@@ -123,5 +124,19 @@ public class SHUtils {
 		}
 		return total & 0xff;
 	}
+
+
+
+	@Test
+	public void test1234(){
+
+		//int a = 403 & 0xff;
+		int a = 259 & 0xff;
+		System.out.println(a);
+
+
+	}
+
+
 
 }

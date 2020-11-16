@@ -1,5 +1,8 @@
 package com.netty.battery.maintenance.shenghong.utils;
 
+import org.hibernate.validator.constraints.br.TituloEleitoral;
+import org.junit.Test;
+
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 
@@ -198,6 +201,35 @@ public class BytesUtil {
 		return d;
 	}
 
+
+	@Test
+	public void testbyte(){
+
+
+
+
+		byte[] b = hexStringToBytes("63 00");
+		String c = BytesUtil.bytesToHexString2(b);
+
+		Integer d=Integer.parseInt("6300",16);
+
+		//int e = getHeight4(b);
+
+
+		System.out.println(b);
+		System.out.println(c);
+		System.out.println(d);
+
+
+	/*	byte[] b = hexStringToBytes("00100000");
+		double allMoney = BytesUtil.toInt4(b);// 11
+		double allMoney2 = BytesUtil.toInt2(b);// 11
+		System.out.println(allMoney);
+		System.out.println(allMoney2);
+*/
+
+	}
+
 	// ------------
 
 	/**
@@ -227,6 +259,45 @@ public class BytesUtil {
         byte[] b = BytesUtil.toBytes(src);
         return BytesUtil.bytesToHexString(b);
     }
+
+    @Test
+    public void inttostr(){
+		String a = intToHexString(12);
+		System.out.println(a);
+	}
+
+
+
+    // double 转byte
+	public static byte[] double2Bytes(double d) {
+		long value = Double.doubleToRawLongBits(d);
+		byte[] byteRet = new byte[8];
+		for (int i = 0; i < 8; i++) {
+			byteRet[i] = (byte) ((value >> 8 * i) & 0xff);
+		}
+		return byteRet;
+	}
+
+	public static double bytes2Double(byte[] arr) {
+		long value = 0;
+		for (int i = 0; i < 2; i++) {
+			value |= ((long) (arr[i] & 0xff)) << (8 * i);
+		}
+		return Double.longBitsToDouble(value);
+	}
+
+    @Test
+    public void hesstr(){
+
+		byte[]  a = double2Bytes(12.43);
+		double b = bytes2Double(a);
+
+		System.out.println(a);
+		System.out.println(b);
+
+	}
+
+
 	/**
 	 * 将10进制int转换为占2个字节的hexString(高字节在前)
 	 * 
@@ -320,8 +391,21 @@ public class BytesUtil {
 	}
 
 	/**
-	 * 低位在前 ，3位的byte[] 转 int
+	 * 低位在前 ，2位的byte[] 转 int
 	 * 
+	 * @param res
+	 *            byte数组
+	 * @return
+	 */
+	public static int toInt2(byte[] bs, int begain) {
+		int accum = 0;
+		accum = bs[begain + 0] & 0xFF;
+		accum |= (bs[begain + 1] & 0xFF) << 8;
+		return accum;
+	}
+/**
+	 * 低位在前 ，3位的byte[] 转 int
+	 *
 	 * @param res
 	 *            byte数组
 	 * @return
@@ -349,6 +433,9 @@ public class BytesUtil {
 		accum |= (bs[3] & 0xFF) << 24;
 		return accum;
 	}
+
+
+
 
 	/**
 	 * 获取 高位在前的4位byte int值<br>
@@ -394,24 +481,19 @@ public class BytesUtil {
      */
     public static double toDouble(byte[] res, int begainIdx) {
         Double data = toInt2(res, begainIdx) * 0.01;
-        DecimalFormat bd = new DecimalFormat("#.00");
+        DecimalFormat bd = new DecimalFormat("#.000");
         data = Double.valueOf( bd.format(data) );
         
         return data;
     }
-	/**
-	 * 低位在前 的 byte[2] 转 int
-	 * 
-	 * @param res 
-	 * @param begainIdx
-	 *            起始位置
-	 * @return
-	 */
-	public static int toInt2(byte[] res, int begainIdx) {
-		// 一个byte数据左移24位变成0x??000000，再右移8位变成0x00??0000
-		int targets = (res[begainIdx] & 0xff) | ((res[begainIdx + 1] << 8) & 0xff00);
 
-		return targets;
+    @Test
+    public void dou(){
+
+		byte[] b = hexStringToBytes("1200");
+		double d = toDouble(b,0);
+		System.out.println(d);
+
 	}
 
 	/**

@@ -5,9 +5,7 @@ import java.io.Serializable;
 import com.netty.battery.maintenance.shenghong.SHUtils;
 import com.netty.battery.maintenance.shenghong.utils.BytesUtil;
 import com.netty.battery.maintenance.shenghong.utils.CommonUtil;
-
-
-
+import org.junit.Test;
 
 
 /**
@@ -24,6 +22,16 @@ public abstract class Message implements Serializable {
 	 * 命令代码
 	 */
 	protected String m_cmd;
+
+
+	public String getM_cmd() {
+		return m_cmd;
+	}
+
+
+	public void setM_cmd(String m_cmd) {
+		this.m_cmd = m_cmd;
+	}
 
 
 	public Message() {
@@ -48,14 +56,4 @@ public abstract class Message implements Serializable {
 
 
 
-	public String getM_cmd() {
-		return m_cmd;
-	}
-
-
-	public void setM_cmd(String m_cmd) {
-		this.m_cmd = m_cmd;
-	}
-	
-	
 }
