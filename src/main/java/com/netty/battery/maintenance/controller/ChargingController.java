@@ -109,7 +109,7 @@ public class ChargingController {
 
                     failureMap.put(basChaPilPojo.getChaNum(),"ip："+basChaPilPojo.getChaIp()+"--编号："+basChaPilPojo.getChaNum()+"服务停止失败。");
                 }
-                successMap.put(basChaPilPojo.getChaNum(),"ip："+basChaPilPojo.getChaIp()+"--编号："+basChaPilPojo.getChaNum()+"服务停止成功。");
+                successMap.put(basChaPilPojo.getChaNum(),"ip："+basChaPilPojo.getChaIp()+"---编号："+basChaPilPojo.getChaNum()+"服务停止成功。");
 
 
             }

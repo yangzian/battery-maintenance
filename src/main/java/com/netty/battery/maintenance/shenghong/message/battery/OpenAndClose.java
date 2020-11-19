@@ -6,7 +6,7 @@ import com.netty.battery.maintenance.shenghong.message.ShengHong;
 public class OpenAndClose extends Message{
 
 
-    public static final String MAINTENANCE = "0100"; // 养护
+    public static final String MAINTENANCE = "0100"; // -养护
     public static final String DISCHARGE = "0200"; //放电
     public static final String REBOOT = "0300"; //复位
 

@@ -76,7 +76,7 @@ public class SHCmd {
 		System.out.println("handler======="+handler);
 
 
-		//handler = null;
+		//handler = null;-
 
 		if (handler == null){
 

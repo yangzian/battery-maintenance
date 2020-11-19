@@ -393,7 +393,7 @@ public class BytesUtil {
 	/**
 	 * 低位在前 ，1位的byte[] 转 int
 	 *
-	 * @param res
+	 * @param res-
 	 *            byte数组
 	 * @return
 	 */

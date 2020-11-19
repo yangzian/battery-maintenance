@@ -73,7 +73,7 @@ public class NettyChargeHandler extends SimpleChannelInboundHandler<byte[]> {
 
 
         if (cmd == 0x06) { //命令代码 为 6 开启控制后 电池应答
-            int res = BytesUtil.toInt1(msg, 44); // 命令执行结果
+            int res = BytesUtil.toInt1(msg, 44); // -命令执行结果
 
             if (res == 0) { // 0-成功 其他失败
                 if (client != null) {

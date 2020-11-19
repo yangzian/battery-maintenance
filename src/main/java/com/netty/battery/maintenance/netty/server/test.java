@@ -23,7 +23,7 @@ public class test {
 
         String modN =BytesUtil.bytesToHexString(moduleSta);
 
-        System.out.println(modN+"-------原数据----");
+        System.out.println(modN+"-------原数据-----");
 
         //Integer mod10=BytesUtil.toInt2(moduleSta);
         int mod10 = Integer.parseInt(modN,16);
