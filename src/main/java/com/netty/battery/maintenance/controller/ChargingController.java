@@ -13,6 +13,7 @@ import com.netty.battery.maintenance.shenghong.manager.ClientManager;
 import com.netty.battery.maintenance.shenghong.message.ChargeRecordInfo;
 import com.netty.battery.maintenance.shenghong.message.StartCharger;
 import com.netty.battery.maintenance.shenghong.message.StopCharger;
+import com.netty.battery.maintenance.shenghong.message.battery.OpenAndClose;
 import com.netty.battery.maintenance.shenghong.utils.BytesUtil;
 //import com.netty.battery.maintenance.util.ASCIIUtil;
 //import com.netty.battery.maintenance.util.CommonUtil;
@@ -128,121 +129,52 @@ public class ChargingController {
 
 
     /**
-     * 预约充电/即时充电-开启
+     * 开启控制
      *
-     * 预约充电 时间格式为String 2020-01-07 12:01:01 正常开启，充电桩状态 为 预约 但是 桩 无反应？？？
-     * 即时充电 开启 可用
+     *
+     *
      *
      * @param staTim
      * @param endTime
-     * @param flag
+     * @param
      * @return
      */
-    @ApiOperation(value = "即时充电-----开启")
+    @ApiOperation(value = "控制-----开启命令 1-养护 2-放电 3-复位")
     @PostMapping(value = "/startOrder")
     public ServerResponse startOrder(@RequestParam(value = "staTim",required = false) String staTim,
                                      @RequestParam(value = "endTime",required = false) String endTime,
                                      @RequestParam(value = "cha_num") String cha_num,
-                                     @RequestParam(value = "userId") String userId,
-                                     @RequestParam(value = "openId") String openId,
-                                     //value = "即时充电-开启，状态为1。(默认为1)",
-                                     @RequestParam(value = "flag",defaultValue = "1") String flag){
+                                     @RequestParam(value = "userId",required = false) String userId,
+                                     @RequestParam(value = "openId",required = false) String openId,
+                                     @RequestParam(value = "flag") String flag
+    ){
         try {
 //
 
 
 
-            // 查询用户余额
-           // Map<String,Object> accBalMap = chargingMapper.selUseWxAccBal(openId);
-
-            //double accc = (double)accBalMap.get("acc_bal");
-
-            if (0 < 2){
-
-                return ServerResponse.createByErrorMessage(new Date()+"桩编码为"+cha_num+"余额不够抵扣电费，请充值后再进行充电。");
-
-            }
-
-
-            System.out.println("开始充电-------桩-"+cha_num+"openId-----------"+ openId);
+            System.out.println("开始-------编号-"+cha_num+"openId-----------"+ openId);
 
             EhcacheUtil ehcache = EhcacheUtil.getInstance();
             ehcache.put(cha_num+"openId",openId);
 
             // chp_id  use_id  sta_tim  end_tim tim_len flag dev_add_num
 
-            // 充电桩ID
-            final String chp_id = "";
-
-            // 用户卡号/用户识别号
-            String use_id = userId;
-            // 开始时间
-            String sta_tim = staTim;
-            // 结束时间
-            String end_tim = endTime;
-            //时长=
-            String tim_len = "";
-
-            String dev_add_num = ""; //硕维 在集中器 下的编号
-
-            String pileNum;
-
-            if (!CommonUtil.isEmpty(dev_add_num)){
-
-                pileNum = BytesUtil.toHexString(dev_add_num);
-
-
-            }
-
-            // 0-预约，1-开启充电
-            //String flag = "0";
-
-
-            String chp_ip = ""; //充电桩ip
-            String chp_por = ""; // 充电桩端口号
-            //String cha_num = "014"; // 充电桩 编号
-           // String man_nam = ""; // 充电桩名称
-            // 通讯设备
-            String chp_com_equ = "";
 
             String desc = "";
+            String chp_ip = "192.168.31.207";
 
+            Map retMap = new HashMap();
 
-
-
-            //根据充电桩id 查询 桩信息bas_cha_pil
-            List<BasChaPilPojo> chaList = chargingService.selChaIp(null,cha_num);
-            if (chaList.size() > 0 ){
-
-                chp_ip = chaList.get(0).getChaIp();
-                chp_por = chaList.get(0).getChaPor();
-                cha_num = chaList.get(0).getChaNum();
-
-                String pilSta = chaList.get(0).getChaPilSta();
-
-                if (!StringUtil.equals("2",pilSta)){
-                    return ServerResponse.createByErrorMessage("编号："+cha_num+"的充电桩非空闲状态，暂时无法开启，请重新连接。");
-                }
-
-
-                //chp_com_equ = chaPojo.getChpComEqu();
-                //man_nam = chaPojo.getManNam();
-
-            }
-
-
-
-            Map<String, Object> retMap = new HashMap<String, Object>();
-
-            Thread.sleep(2000);
+            String chp_por = "9999";
 
             if (chp_por.equals("9999")) { //盛宏
 
                 if (TEST) {
                     // 充电
-                    desc = "开启充电成功";
+                    desc = "开启成功";
                     retMap.put("state", 1);
-                    return ServerResponse.createBySuccess("开启充电成功。",retMap);
+                    return ServerResponse.createBySuccess("开启成功。",retMap);
                     //new Thread(new ChargeRun(cha_num)).start();
 
                 } else {
@@ -255,77 +187,54 @@ public class ChargingController {
 
                         System.out.println("ctx==start==============="+ctx);
 
-
-
-
                         if (client == null || client.getCtx() == null) {
                         //if (ctx == null) {
-                            desc = "桩未连接";
-                            retMap.put("desc","充电桩未连接。");
+                            desc = "设备未连接";
+                            retMap.put("desc","设备未连接。");
                             retMap.put("state", 2);
 
-                            return ServerResponse.createBySuccess("桩未连接",retMap);
+                            return ServerResponse.createBySuccess("",retMap);
 
 
                         } else {
 
-                             client.setUserID(use_id);
+                             client.setUserID("0000");
 
                             StartCharger charger = new StartCharger();//预约/即时充电
 
-                            String charType = "";
+                            OpenAndClose openAndClose = new OpenAndClose(); //控制开启和关闭
 
-                            if (flag.equals("0")) { // 预约
+                            String type = "";
 
-                               charType = StartCharger.ORDER;
-/*
+                            if (flag.equals("1")) { // 养护
 
-                               Calendar calendar = Calendar.getInstance();
-                                calendar.setTimeInMillis(Long.valueOf(end_tim));
+                                type = OpenAndClose.MAINTENANCE;
 
-                                end_tim = CommonUtil.getBCDTimeStr(calendar);
+                            } else if (flag.equals("2")){// 放电
+                                type = OpenAndClose.DISCHARGE;
 
-                                charger.setTime(end_tim); // 预约或定时启动时间（8字节）
-*/
-
-
-                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-                                Calendar calendar = Calendar.getInstance();
-
-                                Date t = sdf.parse(end_tim);
-
-                                calendar.setTime(t);
-
-                                String c = CommonUtil.getBCDTimeStr(calendar);
-
-                                charger.setTime(c);
-
-
-                            } else {// 即时充电
-                                charType = StartCharger.CHARGE;
-
+                            }else {
+                                type = OpenAndClose.REBOOT; //复位
                             }
 
 
-                            charger.setCharType(charType);
+                            openAndClose.setControlCmd(type);
 
-                            String card = ASCIIUtil.ASCII2HexString(use_id);
+                            String card = ASCIIUtil.ASCII2HexString("112233");
 
-                            charger.setCard(card);
+                            openAndClose.setCarNun(card);
 
                             //SHCmd.startCharge(client.getCtx(), charger);
-                            SHCmd.startCharge(ctx, charger);
+                            SHCmd.startCharge(ctx, openAndClose);
 
                             // 等待结果
                             long start = System.currentTimeMillis();
-
 
                             while (true) {
                                 long end = System.currentTimeMillis();
 
                                 client = ClientManager.getClientConnection(chp_ip, cha_num);
-
+/*
                                 if ((end - start) > 60 * 1000) { // 大于60s，视为失败
                                     retMap.put("state", 0);
                                     desc = "失败-超时";
@@ -339,30 +248,26 @@ public class ChargingController {
                                     return ServerResponse.createBySuccess("连接失败，请重新插入电源。",retMap);
 
                                   //  break;
-                                } else if ((charType.equals(StartCharger.ORDER))
-                                            && (client.getPileState() == ClientConnection.STATE_ORDER)) {
-                                    // 预约
-                                    desc = "预约成功";
-                                    retMap.put("state", 1);
-                                    return ServerResponse.createBySuccess("预约充电成功。",retMap);
+                                } else
+                                */
 
-                                   // break;
-                                } else if ((charType.equals(StartCharger.CHARGE))
-                                            && (client.getPileState() == ClientConnection.STATE_CHARGE)) {
-                                    // 充电
-                                    desc = "开启充电成功";
+
+                                    if (type.equals("0100")) {
+                                    retMap.put("state", 1);
+                                    return ServerResponse.createBySuccess("养护开启成功。",retMap);
+
+                                    } else if (type.equals("0200")) {
                                     retMap.put("state", 1);
 
-                                    //0‐空闲中 1‐正准备开始充电 2‐充电进行中 3‐充电结束 4‐启动失败 5‐预约状 态 6‐系统故障(不能给汽车充 电)
-                                    // cha_pil_sta` 充电桩状态（1为充电中，2为空闲，3为故障，4为预约，5为离线,6为告警',
-                                    //fau_sta '故障状态(0为无故障，1为机器故障，2为网络故障，3为系统故障)
-                                    // 修改设备的状态
-                                    //chargingMapper.updChaPilSta(null,null, cha_num,null,"1","0");
-
-
-                                    return ServerResponse.createBySuccess("开启充电成功。",retMap);
+                                    return ServerResponse.createBySuccess("放电开启成功。",retMap);
 
                                    // break;
+
+                                }else if(type.equals("0300")){
+
+                                    retMap.put("state", 1);
+                                    return ServerResponse.createBySuccess("复位开启成功。",retMap);
+
 
                                 }
                             }
@@ -388,14 +293,15 @@ public class ChargingController {
 
 
     /**
-     * 停止充电 或 取消预约 充电
+     * 停止
      *
-     * 取消预约可以用，
-     * 即时充电 无法取消？？？
+     *
+     *
      *
      * @param flag
      * @return
      */
+    @ApiIgnore
     @ApiOperation(value = "即时充电-----关闭")
     @PostMapping(value = "/stopCharge")
     public ServerResponse stopCharge(
@@ -621,6 +527,7 @@ public class ChargingController {
      * @param chp_id 充电桩编号
      * @return
      */
+    @ApiIgnore
     @ApiOperation(value = "充电桩实时数据获取")
     @PostMapping(value = "/chaReaTim")
     public ServerResponse chaReaTim(@RequestParam(value = "chp_id") String chp_id,
@@ -654,6 +561,7 @@ public class ChargingController {
      * @param chp_id
      * @return
      */
+    @ApiIgnore
     @ApiOperation(value = "获取充电桩告警状态")
     @PostMapping(value = "/getAlarm")
     public ServerResponse getAlarm(@RequestParam(value = "chp_id") String chp_id){

@@ -8,6 +8,8 @@ import com.netty.battery.maintenance.service.serviceImpl.ChargingServiceImpl;
 import com.netty.battery.maintenance.shenghong.handle.HandleName;
 import com.netty.battery.maintenance.shenghong.message.StartCharger;
 import com.netty.battery.maintenance.shenghong.message.StopCharger;
+import com.netty.battery.maintenance.shenghong.message.battery.OpenAndClose;
+import com.netty.battery.maintenance.shenghong.utils.BytesUtil;
 import com.netty.battery.maintenance.util.ApplicationContextUtils;
 import com.netty.battery.maintenance.util.EhcacheUtil;
 import io.netty.channel.*;
@@ -37,12 +39,12 @@ public class SHCmd {
 	
 	
 	/**
-	 * 开启充电/预约
+	 * 开启控制
 	 * @param ctx
 	 * @param data
 	 * @return
 	 */
-	public static boolean startCharge(final ChannelHandlerContext ctx, StartCharger data) {
+	public static boolean startCharge(final ChannelHandlerContext ctx, OpenAndClose data) {
 
 		EhcacheUtil ehcache = EhcacheUtil.getInstance();
 
@@ -56,17 +58,14 @@ public class SHCmd {
 			return false;
 		}
 		int flag = 0;
-		if (data.getCharType().equals(StartCharger.ORDER)) {
+
+		/*if (data.getCharType().equals(StartCharger.ORDER)) {
 			flag = 0;
 		}else{
 			flag = 1;
 		}
-
+*/
 		//NettyChargeHandler handler = (NettyChargeHandler) ctx.channel().pipeline().get(HandleName.HANDLE_CHARGE) ;
-		System.out.println("sta====ctx========="+ctx);
-		System.out.println("sta====ctx.channel()========="+ctx.channel());
-		System.out.println("sta====ctx.channel().pipeline()========="+ctx.channel().pipeline());
-		System.out.println("sta====ctx.channel().pipeline().get()=========="+ctx.channel().pipeline().get("charge"));
 
 		NettyChargeHandler handler = null;
 
@@ -97,13 +96,17 @@ public class SHCmd {
 		handler.setFlag(flag);
 
 		ChannelFuture future = ctx.writeAndFlush(data.getMsgByte(index));
+
+		System.out.println("发送命令成功111 --->"+data);
+		System.out.println("发送数据成功2222--->"+BytesUtil.bytesToHexString(data.getMsgByte(index)));
 		index += 2;
 		future.addListener(new ChannelFutureListener() {
 			@Override
 			public void operationComplete(ChannelFuture future) throws Exception {
 				if (future.isSuccess()) {
 				    //log.info("盛宏桩 发送开启充电命令成功 --->");
-					System.out.println("盛宏桩 发送开启充电命令成功 --->");
+					System.out.println("发送命令成功 --->"+data);
+					System.out.println("发送数据成功 --->"+BytesUtil.bytesToHexString(data.getMsgByte(index)));
 				}
 
 			}

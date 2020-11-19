@@ -79,7 +79,7 @@ public class ClientConnection {
 	/**
 	 * 
 	 *  
-	 * 桩当前状态 0-正常 1-预约中 2-充电中 3-离线  6-故障
+	 * 电池当前状态 0-失败 1-养护 2-放电 3-放电
 	 */
 	private int pileState;
 

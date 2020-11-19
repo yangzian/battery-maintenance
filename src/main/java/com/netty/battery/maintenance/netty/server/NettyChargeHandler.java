@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-// 预约/充电
+// 控制  养护 放电 复位
 public class NettyChargeHandler extends SimpleChannelInboundHandler<byte[]> {
 
 
@@ -72,23 +72,22 @@ public class NettyChargeHandler extends SimpleChannelInboundHandler<byte[]> {
 
 
 
-        if (cmd == 0x08) {
-            int res = BytesUtil.toInt4(msg, 45);
+        if (cmd == 0x06) { //命令代码 为 6 开启控制后 电池应答
+            int res = BytesUtil.toInt1(msg, 44); // 命令执行结果
 
-            if (res == 0) {
+            if (res == 0) { // 0-成功 其他失败
                 if (client != null) {
-                    if (flag == 0) { // 预约
+                    if (flag == 0) { //
 
-                        System.out.println("开启预约  -- 成功");
+                        //电池当前状态 0-失败 1-养护 2-放电 3-放电
+                        System.out.println("开启  -- 成功");
 
-                        //0‐空闲中 1‐正准备开始充电 2‐充电进行中 3‐充电结束 4‐启动失败 5‐预约状 态 6‐系统故障(不能给汽车充 电)
-
-                        client.setPileState(ClientConnection.STATE_ORDER); // 5
+                        client.setPileState(1); //
                     } else {
 
-                        System.out.println("chargeHandler=====开启充电 -- 成功");
+                        System.out.println("chargeHandler=====开启 -- 成功");
 
-                        client.setPileState(ClientConnection.STATE_CHARGE);// 2
+                        client.setPileState(2);// 2
 
                     }
                 }
@@ -96,12 +95,12 @@ public class NettyChargeHandler extends SimpleChannelInboundHandler<byte[]> {
             } else {
                 if (client != null) {
 
-                    client.setPileState(ClientConnection.STATE_START_FAILED); //4
+                    client.setPileState(0); //失败
                 }
 
-                System.out.println("开启预约/即时充电--失败");
+                System.out.println("开启--失败");
             }
-        } else if (cmd == 0x06) {
+        } else if (cmd == 0x08) {
 
             if (msg[50] == 0) {
                 if (client != null) {

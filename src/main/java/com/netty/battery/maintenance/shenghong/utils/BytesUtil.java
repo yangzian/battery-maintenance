@@ -391,6 +391,19 @@ public class BytesUtil {
 	}
 
 	/**
+	 * 低位在前 ，1位的byte[] 转 int
+	 *
+	 * @param res
+	 *            byte数组
+	 * @return
+	 */
+	public static int toInt1(byte[] bs, int begain) {
+		int accum = 0;
+		accum = bs[begain + 0] & 0xFF;
+		return accum;
+	}
+
+	/**
 	 * 低位在前 ，2位的byte[] 转 int
 	 * 
 	 * @param res

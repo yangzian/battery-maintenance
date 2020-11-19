@@ -9,18 +9,17 @@ public class test {
     public static void main(String[] args) {
 
         byte[] b =  BytesUtil.hexStringToBytes("aa f5 32 00 10 01" +
-                "6a 00" +
+                "06 00" +
                 "00 00 00 00" +
                 "31 31 32 32 33 33 00 00 00 00" +
                 "00 00 00 00 00 00 00 00 00 00" +
                 "00 00 00 00 00 00 00 00 00 00" +
-                "00 01" +
-                "00 63" +
-                "00 02" +
-                "32");
+                "00 00" +
+                "01"
+        );
 
-        byte[] moduleSta = new byte[2];
-        System.arraycopy(b, 42, moduleSta, 0, moduleSta.length);
+        byte[] moduleSta = new byte[1];
+        System.arraycopy(b, 6, moduleSta, 0, moduleSta.length);
 
         String modN =BytesUtil.bytesToHexString(moduleSta);
 
@@ -29,6 +28,10 @@ public class test {
         //Integer mod10=BytesUtil.toInt2(moduleSta);
         int mod10 = Integer.parseInt(modN,16);
         System.out.println(mod10+"------转换成16进制-----");
+
+       int a =  BytesUtil.toInt1(moduleSta,0);
+        System.out.println(a+"-------数据----");
+
        // System.out.println(Integer.parseInt(String.valueOf(modN),16));
 
        // String modN =BytesUtil.toHexString(BytesUtil.bytesToHexString(moduleSta));
